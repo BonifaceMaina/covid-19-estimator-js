@@ -12,7 +12,7 @@ const covid19ImpactEstimator = (data) => {
     impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
     severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
   } else if (data.periodType === 'weeks') {
-    const time = data.timeToElapse * 7;
+    const time = data.timeToElapse * 5;
     impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
     severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
   } else if (data.periodType === 'months') {
