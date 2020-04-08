@@ -6,20 +6,19 @@ const covid19ImpactEstimator = (data) => {
   impact.currentlyInfected = impCI;
   const sevCI = data.reportedCases * 50;
   severeImpact.currentlyInfected = sevCI;
-  //   const input = data;
-  if (data.periodType === 'days') {
-    const time = data.timeToElapse;
-    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
-    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
-  } else if (data.periodType === 'weeks') {
-    const time = data.timeToElapse * 7;
-    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
-    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+  let time = data.timeToElapse;
+
+  if (data.periodType === 'weeks') {
+    time = data.timeToElapse * 7;
   } else if (data.periodType === 'months') {
-    const time = data.timeToElapse * 30;
-    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
-    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+    time = data.timeToElapse * 30;
   }
+  impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
+  severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+  const sevCBRT = 0.15 * severeImpact.infectionsByRequestedTime;
+  severeImpact.severeCasesByRequestedTime = sevCBRT;
+  const bedsAvailable = 0.35 * data.totalHospitalBeds;
+  severeImpact.hospitalBedsByRequestedTime = bedsAvailable - sevCBRT;
 
   return {
     data,
