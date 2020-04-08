@@ -1,30 +1,31 @@
-const currentlyInfectedEstimate = (data) => {
-  this.data = data;
-  this.impact.currentlyInfected = data.reportedCases * 10;
-  this.severeImpact.currentlyInfected = data.reportedCases * 50;
-};
-// const estimateInDays = (data) => {
-//   const input = data;
-//   return {
-//     data: input,
-//     impact: {
-//       currentlyInfected: input.reportedCases * 10,
-//       infectionsByRequestedTime: Math.floor(currentlyInfected * (2 ** (input.timeToElapse / 3)))
-//     },
-//     severeImpact: {
-//       currentlyInfected: input.reportedCases * 50,
-//       infectionsByRequestedTime: Math.floor(currentlyInfected * (2 ** (input.timeToElapse / 3)))
-//     }
-//   };
-// };
-
 const covid19ImpactEstimator = (data) => {
-  const estimatedData = currentlyInfectedEstimate;
-  return estimatedData({
-    data: {},
-    impact: {},
-    severeImpact: {}
-  });
+  const impact = {};
+  const severeImpact = {};
+
+  const impCI = data.reportedCases * 10;
+  impact.currentlyInfected = impCI;
+  const sevCI = data.reportedCases * 50;
+  severeImpact.currentlyInfected = sevCI;
+  //   const input = data;
+  if (data.periodType === 'days') {
+    const time = data.timeToElapse;
+    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
+    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+  } else if (data.periodType === 'weeks') {
+    const time = data.timeToElapse * 7;
+    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
+    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+  } else if (data.periodType === 'months') {
+    const time = data.timeToElapse * 30;
+    impact.infectionsByRequestedTime = Math.floor(impCI * (2 ** (time / 3)));
+    severeImpact.infectionsByRequestedTime = Math.floor(sevCI * (2 ** (time / 3)));
+  }
+
+  return {
+    data,
+    impact,
+    severeImpact
+  };
 };
 
 export default covid19ImpactEstimator;
